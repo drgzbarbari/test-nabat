@@ -220,6 +220,9 @@
       "&poi=" + encodeURIComponent(poi) + "&d=" + dMs;
     var qrSrc = buildQr(url);
 
+    // absolute URL so the about:blank popup can load it
+    var bgAbs = new URL("bgcopy.png", window.location.href).href;
+
     var col0="", col1="", col2="", col3="", col4="", col5="";
     CERT.Products.forEach(function (p, i) {
       col0 += "<span>" + (i+1) + "</span><br>";
@@ -248,13 +251,18 @@
         ".toolbar h1{font-size:15px;margin:0 auto 0 0;font-weight:600;}" +
         ".toolbar button{padding:6px 12px;font-size:14px;border-radius:4px;cursor:pointer;" +
           "color:#fff;background:#5cb85c;border:1px solid #4cae4c;}" +
-        ".stage{display:flex;justify-content:center;padding:30px;" +
-          /* CERTIFICATE background = bgcopy.png */
-          "background-image:url('bgcopy.png');background-size:cover;background-position:center;" +
-          "background-repeat:no-repeat;min-height:calc(100vh - 50px);}" +
+
+        /* stage only centers the sheet — no background here */
+        ".stage{display:flex;justify-content:center;padding:30px;}" +
+
+        /* bgcopy.png mapped exactly onto the A4 sheet */
         "#print-container{height:29.7cm;width:21cm;font-family:tahoma,sans-serif;font-size:10px;" +
-          "position:relative;background:rgba(255,255,255,0.92);" +
+          "position:relative;" +
+          "background-image:url('" + bgAbs + "');" +
+          "background-size:100% 100%;background-position:center center;" +
+          "background-repeat:no-repeat;background-color:#fff;" +
           "box-shadow:0 0 12px rgba(0,0,0,.6);}" +
+
         ".part{position:absolute;color:#686868;font-weight:600;}" +
         ".part>span{display:block;margin-bottom:7px;}" +
         "#p0{top:2.5cm;left:12.5cm;width:8.5cm;text-indent:2cm;}" +
@@ -285,7 +293,7 @@
         "#qrcode-image{position:absolute;width:2cm;height:2cm;top:2cm;left:17.85cm;}" +
         "@page{size:A4 portrait;margin:0;}" +
         "@media print{body{background:#fff;}.toolbar,.stage{display:none!important;}" +
-          "#print-container{box-shadow:none;margin:0;background:#fff;}}" +
+          "#print-container{box-shadow:none;margin:0;}}" +
       "</style></head><body>" +
       "<div class='toolbar'><h1>E-Phyto " + escapeHtml(sn) + "</h1>" +
         "<button onclick='window.print()'>Print / Save as PDF</button></div>" +
@@ -333,7 +341,9 @@
       document.getElementById("view-doc").onclick = function () {
         var w = window.open("", "_blank");
         if (!w) { alert("Please allow pop-ups for this site."); return; }
-        w.document.open(); w.document.write(certificateHtml(sn, poi, dMs)); w.document.close();
+        w.document.open();
+        w.document.write(certificateHtml(sn, poi, dMs));
+        w.document.close();
       };
     } else if (kind === "notFound") {
       box.style.display = "";

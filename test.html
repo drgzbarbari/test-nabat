@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phytosanitary Certificate Search</title>
+<style>
+  /* ============ app shell ============ */
+  body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #1f3b2d;
+    background-image: url("blur.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+  }
+
+  header {
+    display: flex; justify-content: center; align-items: center;
+    height: 120px; padding: 15px; color: #fff; font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,.45);
+  }
+  header .logo { height: 100%; margin-right: 18px; flex-shrink: 0; }
+  header h1 { font-size: 18px; text-align: center; margin: 4px 0; }
+
+  main {
+    background-color: #f2f2f2;
+    margin: 0 75px 25px;
+    padding: 25px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px #000;
+  }
+  @media only screen and (max-width: 720px) { main { margin: 0 25px 25px; } }
+
+  h2 { margin-top: 0; margin-bottom: 50px; }
+
+  .row { display: flex; flex-direction: row; margin: 0 -25px; }
+  .form-group { flex: 1 1; padding: 0 25px; margin-bottom: 20px; }
+
+  .form-control {
+    display: block; width: 100%; height: 34px; padding: 6px 12px;
+    font-size: 14px; line-height: 1.42857143; color: #555;
+    background-color: #fff; background-image: none;
+    border: 1px solid #ccc; border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    box-sizing: border-box;
+  }
+  /* native date input tweaks so it matches .form-control */
+  input[type="date"].form-control {
+    padding: 5px 12px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="date"].form-control::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: .6;
+  }
+
+  label { display: block; margin-bottom: 5px; }
+
+  button {
+    display: inline-block; padding: 6px 12px; margin-bottom: 0;
+    font-size: 14px; font-weight: 400; line-height: 1.42857143;
+    text-align: center; white-space: nowrap; vertical-align: middle;
+    touch-action: manipulation; cursor: pointer;
+    user-select: none; background-image: none; border-radius: 4px;
+    color: #fff; background-color: #5cb85c; border: 1px solid #4cae4c;
+  }
+  button.secondary {
+    background-color: #fff; color: #333; border: 1px solid #ccc;
+    padding: 4px 10px; font-size: 12px; margin-left: 6px;
+  }
+  .button-container {
+    justify-content: flex-end; align-items: center;
+    padding: 0 25px; margin-bottom: 25px;
+  }
+  .result-container {
+    border-top: 1px solid grey; padding: 25px 25px 0;
+  }
+  .link { cursor: pointer; color: #00f; text-decoration: underline; }
+
+  @media only screen and (max-width: 600px) {
+    .row { flex-direction: column; margin: 0 -25px 25px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo" src="logo.png" alt="Plant Protection Organization"
+       onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+  <div class="logo-fallback" style="display:none; width:90px; height:90px; background:#e8f4ea; border-radius:50%; align-items:center; justify-content:center; color:#1f3b2d; font-size:11px; text-align:center; margin-right:18px; flex-shrink:0;">PPO<br>LOGO</div>
+  <div>
+    <h1>سازمان حفظ نباتات کشور</h1>
+    <h1>Plant Protection Organization</h1>
+  </div>
+</header>
+
+<main>
+  <h2>Phytosanitary Certificate Search</h2>
+
+  <fieldset style="all: unset; display: block;">
+    <div class="row">
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input id="date" type="date" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="poi">Place of Issue</label>
+        <select id="poi" class="form-control">
+          <option value="1">Ardabil</option>
+          <option value="2">Isfahan</option>
+          <option value="3">Alborz</option>
+          <option value="4">Ilam</option>
+          <option value="5">East Azerbaijan</option>
+          <option value="6">West Azerbaijan</option>
+          <option value="7">Bushehr</option>
+          <option value="8">Tehran</option>
+          <option value="9">Chaharmahal and Bakhtiari</option>
+          <option value="10">South Khorasan</option>
+          <option value="11">Razavi Khorasan</option>
+          <option value="12">North Khorasan</option>
+          <option value="13">Khuzestan</option>
+          <option value="14">Zanjan</option>
+          <option value="15">Semnan</option>
+          <option value="16">Sistan and Baluchestan</option>
+          <option value="17">Fars</option>
+          <option value="18">Qazvin</option>
+          <option value="19">Qom</option>
+          <option value="20">Kurdistan</option>
+          <option value="21">Kerman</option>
+          <option value="22">Kermanshah</option>
+          <option value="23">Kohgiluyeh and Boyer-Ahmad</option>
+          <option value="24">Golestan</option>
+          <option value="25">Guilan</option>
+          <option value="26">Lorestan</option>
+          <option value="27">Mazandaran</option>
+          <option value="28">Markazi</option>
+          <option value="29">Hormozgan</option>
+          <option value="30">Hamadan</option>
+          <option value="31">Yazd</option>
+          <option value="389452">Mantaghe Jonob Kerman</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="sn">Serial No</label>
+        <input id="sn" type="text" class="form-control" placeholder="e.g. 053624303">
+      </div>
+    </div>
+
+    <div class="row button-container">
+      <button type="button" id="today-btn" class="secondary">Today</button>
+      <button type="button" id="search-btn">Search</button>
+    </div>
+  </fieldset>
+
+  <div class="row result-container" id="result" style="display:none;"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script>
+  // ---------- shared certificate data (real record 053624303) ----------
+  var CERT = {
+    SerialNo: "053624303",
+    ExporterName: "ALMAS DANEH ESTAHBAN COMMERCIAL GROUP",
+    ExporterPostalCode: "7451937565",
+    ExporterAddress: "IRAN , FARS , ESTAHBAN , KARGAR ST , EMAM KHOMEINI SQ , NO 0",
+    ExporterTel: "07153231710",
+    ConsigneeName: "Chengdu Fushi Trading Co., Ltd",
+    ConsigneeAddress:
+      "ADD : No.5,3rd floor,Building A04,Unicorn Workshop,No.20 Fan Kuai Avenue," +
+      "Tianfu New Energy and New Materials Industrial Park,Economic Development Zone," +
+      "Qionglai City,Chengdu,Sichuan Province LOT NO : 2026024",
+    CountryEnglishName: "China",
+    SourceCountryEnglishName: "I.R. IRAN",
+    TConveyance11: "By Truck, No: 80295VBA / 801859BA",
+    EntryPoint: "CHINA",
+    Products: [
+      {
+        ProductEnglishName: "dried fig fruit",
+        ProductScientificName: "Ficus carica",
+        NoOfPackages: "2410",
+        TypeOfPackagesName: "Carton",
+        T2: "Net: 21690 Kg"
+      }
+    ],
+    EnglishProvinceName: "West Azerbaijan",
+    IssueNo: "2602040002075",
+    ConfirmDateString: "Sunday, November 8, 2026",
+    ConfirmerEnglishName: "Saman gabrieli",
+    ConfirmerUserCode: "204"
+  };
+
+  // ---------- helpers ----------
+  function buildQr(value) {
+    try {
+      var qr = qrcode(0, "M");
+      qr.addData(value);
+      qr.make();
+      return qr.createDataURL(6, 0);
+    } catch (e) {
+      console.warn("QR failed:", e);
+      return "";
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // Format a JS Date as yyyy-mm-dd (for <input type=date>)
+  function toInputDate(d) {
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+
+  // ---------- certificate HTML for the new tab ----------
+  function certificateHtml(sn, poi, dMs) {
+    var url =
+      "http://ephyto.pms.ppo.ir/phytosanitary" +
+      "?sn=" + encodeURIComponent(sn) +
+      "&poi=" + encodeURIComponent(poi) +
+      "&d=" + dMs;
+    var qrSrc = buildQr(url);
+
+    var col0 = "", col1 = "", col2 = "", col3 = "", col4 = "", col5 = "";
+    CERT.Products.forEach(function (p, i) {
+      col0 += "<span>" + (i + 1) + "</span><br>";
+      col1 += "<span>" + escapeHtml(p.ProductEnglishName) + "</span><br>";
+      col2 += "<span>" + escapeHtml(p.ProductScientificName) + "</span><br>";
+      col3 += "<span>" + escapeHtml(p.NoOfPackages + " " + p.TypeOfPackagesName) + "</span><br>";
+      col4 += "<span>************</span><br>";
+      col5 += "<span>" + escapeHtml(p.T2 || "************") + "</span><br>";
+    });
+    while ((col0.match(/<br>/g) || []).length < 7) {
+      col0 += "<span>0<span>*</span></span><br>";
+      col1 += "<span>***************</span><br>";
+      col2 += "<span>***************</span><br>";
+      col3 += "<span>***************</span><br>";
+      col4 += "<span>************</span><br>";
+      col5 += "<span>************</span><br>";
+    }
+
+    return "<!doctype html><html><head><meta charset='utf-8'>" +
+      "<title>E-Phyto " + escapeHtml(sn) + "</title>" +
+      "<style>" +
+        "html,body{margin:0;padding:0;background:#2b2b2b;}" +
+        ".toolbar{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;" +
+          "padding:12px 20px;background:#1e1e1e;color:#eee;border-bottom:1px solid #444;" +
+          "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}" +
+        ".toolbar h1{font-size:15px;margin:0 auto 0 0;font-weight:600;}" +
+        ".toolbar button{padding:6px 12px;font-size:14px;border-radius:4px;cursor:pointer;" +
+          "color:#fff;background:#5cb85c;border:1px solid #4cae4c;}" +
+        ".stage{display:flex;justify-content:center;padding:30px;}" +
+        "#print-container{height:29.7cm;width:21cm;font-family:tahoma,sans-serif;font-size:10px;" +
+          "position:relative;background:#fbfaf5;box-shadow:0 0 12px rgba(0,0,0,.6);}" +
+        ".part{position:absolute;color:#686868;font-weight:600;}" +
+        ".part>span{display:block;margin-bottom:7px;}" +
+        "#p0{top:2.5cm;left:12.5cm;width:8.5cm;text-indent:2cm;}" +
+        "#p1{top:5.0cm;left:1.8cm;width:8.5cm;text-indent:2cm;}" +
+        "#p2{top:5.0cm;left:11.3cm;width:8.3cm;text-indent:2.8cm;}" +
+        "#p3{top:8cm;left:1.5cm;width:8.5cm;text-indent:2.7cm;}" +
+        "#p4{top:8cm;left:11.3cm;width:8.3cm;text-indent:2.1cm;}" +
+        "#p5{top:9.35cm;left:1.5cm;width:8.5cm;text-indent:2.1cm;}" +
+        "#p6{top:9.35cm;left:11.3cm;width:8.3cm;text-indent:1.9cm;}" +
+        "#p7-0{top:11.55cm;left:1cm;width:0.5cm;}" +
+        "#p7-1{top:11.55cm;left:1.5cm;width:3cm;}" +
+        "#p7-2{top:11.55cm;left:5.8cm;width:3.3cm;}" +
+        "#p7-3{top:11.55cm;left:11cm;width:3.2cm;}" +
+        "#p7-4{top:11.55cm;left:15cm;width:2.5cm;}" +
+        "#p7-5{top:11.55cm;left:17.8cm;width:2.4cm;}" +
+        "#p9{top:18.7cm;left:1.5cm;width:18cm;text-indent:1.7cm;}" +
+        "#p10{top:21.9cm;left:1.5cm;width:9.3cm;text-indent:1.5cm;}" +
+        "#p11{top:22.9cm;left:1.5cm;width:4.8cm;text-indent:2.5cm;}" +
+        "#p12{top:22.9cm;left:8cm;width:3.7cm;text-indent:1cm;}" +
+        "#p13{top:24.55cm;left:1.5cm;width:4.8cm;text-indent:.8cm;}" +
+        "#p14{top:24.58cm;left:8cm;width:3.7cm;text-indent:.5cm;}" +
+        "#p15{top:25.8cm;left:2cm;width:9cm;text-indent:1.6cm;}" +
+        "#p16-1{top:20.9cm;left:14cm;width:6.5cm;}" +
+        "#p16-2{top:21.9cm;left:14cm;width:6.5cm;}" +
+        "#p16-3{top:22.9cm;left:14cm;width:6.5cm;}" +
+        "#p16-4{top:24.5cm;left:13cm;width:7.5cm;}" +
+        "#p16-5{top:26.5cm;left:13cm;width:6.5cm;}" +
+        "#qrcode-image{position:absolute;width:2cm;height:2cm;top:2cm;left:17.85cm;}" +
+        "@page{size:A4 portrait;margin:0;}" +
+        "@media print{body{background:#fff;}.toolbar,.stage{display:none!important;}" +
+          "#print-container{box-shadow:none;margin:0;}}" +
+      "</style></head><body>" +
+      "<div class='toolbar'><h1>E-Phyto " + escapeHtml(sn) + "</h1>" +
+        "<button onclick='window.print()'>Print / Save as PDF</button></div>" +
+      "<div class='stage'><div id='print-container'>" +
+        "<img id='qrcode-image' alt='QR' src='" + qrSrc + "'>" +
+        "<div class='part' id='p0'>" + escapeHtml(CERT.SerialNo) + "</div>" +
+        "<div class='part' id='p1'>" +
+          escapeHtml(CERT.ExporterName) + " <br>" +
+          escapeHtml(CERT.ExporterPostalCode) + " <br>" +
+          escapeHtml(CERT.ExporterAddress) + " <br>" +
+          escapeHtml(CERT.ExporterTel) + " <br>" +
+          "***************************</div>" +
+        "<div class='part' id='p2'>" +
+          escapeHtml(CERT.ConsigneeName) + " <br>" +
+          escapeHtml(CERT.ConsigneeAddress) + " <br>" +
+          "****************************************</div>" +
+        "<div class='part' id='p3'>" + escapeHtml(CERT.CountryEnglishName) + "</div>" +
+        "<div class='part' id='p4'>" + escapeHtml(CERT.SourceCountryEnglishName) + "</div>" +
+        "<div class='part' id='p5'>" + escapeHtml(CERT.TConveyance11) + "</div>" +
+        "<div class='part' id='p6'>" + escapeHtml(CERT.EntryPoint) + "</div>" +
+        "<div>" +
+          "<div class='part' id='p7-0'>" + col0 + "</div>" +
+          "<div class='part' id='p7-1'>" + col1 + "</div>" +
+          "<div class='part' id='p7-2'>" + col2 + "</div>" +
+          "<div class='part' id='p7-3'>" + col3 + "</div>" +
+          "<div class='part' id='p7-4'>" + col4 + "</div>" +
+          "<div class='part' id='p7-5'>" + col5 + "</div>" +
+        "</div>" +
+        "<div class='part' id='p9'> </div>" +
+        "<div class='part' id='p10'><span>*****</span></div>" +
+        "<div class='part' id='p11'><span>*****</span></div>" +
+        "<div class='part' id='p12'><span>*****</span><span></span><span>*****</span></div>" +
+        "<div class='part' id='p13'><span>*****</span></div>" +
+        "<div class='part' id='p14'><span>*****</span></div>" +
+        "<div class='part' id='p15'><span>*****</span></div>" +
+        "<div class='part' id='p16-1'>" + escapeHtml(CERT.EnglishProvinceName) + "</div>" +
+        "<div class='part' id='p16-2'>" + escapeHtml(CERT.IssueNo) + "</div>" +
+        "<div class='part' id='p16-3'>" + escapeHtml(CERT.ConfirmDateString) + "</div>" +
+        "<div class='part' id='p16-4'>" + escapeHtml(CERT.ConfirmerEnglishName + " " + CERT.ConfirmerUserCode) + "</div>" +
+        "<div class='part' id='p16-5'></div>" +
+      "</div></div>" +
+      "</body></html>";
+  }
+
+  // ---------- result rendering ----------
+  function setResult(kind, sn, poi, dMs) {
+    var box = document.getElementById("result");
+    if (kind === "found") {
+      box.style.display = "";
+      box.innerHTML =
+        '<code>Certificate exists. ' +
+        '<span class="link" id="view-doc">(view document)</span></code>';
+      document.getElementById("view-doc").onclick = function () {
+        var html = certificateHtml(sn, poi, dMs);
+        var w = window.open("", "_blank");
+        if (!w) {
+          alert("Please allow pop-ups for this site to view the certificate.");
+          return;
+        }
+        w.document.open();
+        w.document.write(html);
+        w.document.close();
+      };
+    } else if (kind === "notFound") {
+      box.style.display = "";
+      box.innerHTML =
+        "<code>No phytosanitary certificate was found with these information.</code>";
+    } else {
+      box.style.display = "";
+      box.innerHTML = "<code>Loading...</code>";
+    }
+  }
+
+  // ---------- URL <-> form sync ----------
+  function currentDateMs() {
+    var v = document.getElementById("date").value; // yyyy-mm-dd
+    if (!v) return Date.now();
+    // Build a local-date timestamp (midnight local), matching real app semantics
+    var parts = v.split("-");
+    var dt = new Date(
+      parseInt(parts[0], 10),
+      parseInt(parts[1], 10) - 1,
+      parseInt(parts[2], 10)
+    );
+    return dt.getTime();
+  }
+
+  function readUrlParams() {
+    var q = new URLSearchParams(location.search);
+    var sn = q.get("sn") || "";
+    var poi = q.get("poi") || "6";
+    var dRaw = q.get("d");
+    var dMs = dRaw ? parseInt(dRaw, 10) : Date.now();
+
+    document.getElementById("sn").value = sn;
+    document.getElementById("poi").value = poi;
+    document.getElementById("date").value = toInputDate(new Date(dMs));
+
+    return { sn: sn, poi: poi, dMs: dMs };
+  }
+
+  function writeUrlParams(sn, poi, dMs) {
+    var q = new URLSearchParams(location.search);
+    if (sn) q.set("sn", sn); else q.delete("sn");
+    if (poi) q.set("poi", poi); else q.delete("poi");
+    if (dMs) q.set("d", String(dMs)); else q.delete("d");
+    var newUrl = location.pathname + (q.toString() ? "?" + q.toString() : "");
+    history.replaceState(null, "", newUrl);
+  }
+
+  // ---------- search ----------
+  function doSearch(sn, poi, dMs, updateUrl) {
+    if (updateUrl) writeUrlParams(sn, poi, dMs);
+    setResult("loading");
+
+    // Mock backend — swap for a real fetch to EPhytosanitary/Get when available.
+    setTimeout(function () {
+      if (sn === "053624303") {
+        setResult("found", sn, poi, dMs);
+      } else {
+        setResult("notFound");
+      }
+    }, 400);
+  }
+
+  document.getElementById("search-btn").addEventListener("click", function () {
+    var sn = document.getElementById("sn").value.trim();
+    var poi = document.getElementById("poi").value;
+    var dMs = currentDateMs();
+    doSearch(sn, poi, dMs, true);
+  });
+
+  document.getElementById("today-btn").addEventListener("click", function () {
+    document.getElementById("date").value = toInputDate(new Date());
+  });
+
+  // ---------- boot: honor ?sn=&poi=&d= like the real app ----------
+  (function () {
+    // Default date = today if the URL didn't specify one
+    document.getElementById("date").value = toInputDate(new Date());
+
+    var params = readUrlParams();
+    if (params.sn) {
+      // Auto-search only if the URL supplied a serial
+      doSearch(params.sn, params.poi, params.dMs, false);
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Publishes the repo root as a GitLab Pages site.
+# Your site will be at:
+#   https://<username>.gitlab.io/<repo-name>/
+# (or https://<group>.gitlab.io/<repo-name>/ for group projects)
+pages:
+  stage: deploy
+  script:
+    - mkdir -p public
+    - cp main-page.html public/index.html
+    - cp logo.png public/logo.png
+    - cp blur.png public/blur.png
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

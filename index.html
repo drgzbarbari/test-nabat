@@ -13,12 +13,15 @@
       "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* MAIN PAGE background = blur.png */
     background-color: #1f3b2d;
     background-image: url("blur.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
+
     min-height: 100vh;
   }
 
@@ -53,15 +56,13 @@
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     box-sizing: border-box;
   }
-  /* native date input tweaks so it matches .form-control */
   input[type="date"].form-control {
     padding: 5px 12px;
     -webkit-appearance: none;
     appearance: none;
   }
   input[type="date"].form-control::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    opacity: .6;
+    cursor: pointer; opacity: .6;
   }
 
   label { display: block; margin-bottom: 5px; }
@@ -167,7 +168,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script>
-  // ---------- shared certificate data (real record 053624303) ----------
   var CERT = {
     SerialNo: "053624303",
     ExporterName: "ALMAS DANEH ESTAHBAN COMMERCIAL GROUP",
@@ -183,15 +183,13 @@
     SourceCountryEnglishName: "I.R. IRAN",
     TConveyance11: "By Truck, No: 80295VBA / 801859BA",
     EntryPoint: "CHINA",
-    Products: [
-      {
-        ProductEnglishName: "dried fig fruit",
-        ProductScientificName: "Ficus carica",
-        NoOfPackages: "2410",
-        TypeOfPackagesName: "Carton",
-        T2: "Net: 21690 Kg"
-      }
-    ],
+    Products: [{
+      ProductEnglishName: "dried fig fruit",
+      ProductScientificName: "Ficus carica",
+      NoOfPackages: "2410",
+      TypeOfPackagesName: "Carton",
+      T2: "Net: 21690 Kg"
+    }],
     EnglishProvinceName: "West Azerbaijan",
     IssueNo: "2602040002075",
     ConfirmDateString: "Sunday, November 8, 2026",
@@ -199,52 +197,39 @@
     ConfirmerUserCode: "204"
   };
 
-  // ---------- helpers ----------
   function buildQr(value) {
     try {
       var qr = qrcode(0, "M");
-      qr.addData(value);
-      qr.make();
+      qr.addData(value); qr.make();
       return qr.createDataURL(6, 0);
-    } catch (e) {
-      console.warn("QR failed:", e);
-      return "";
-    }
+    } catch (e) { return ""; }
   }
-
   function escapeHtml(s) {
     return String(s == null ? "" : s)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
-
-  // Format a JS Date as yyyy-mm-dd (for <input type=date>)
   function toInputDate(d) {
-    var y = d.getFullYear();
-    var m = String(d.getMonth() + 1).padStart(2, "0");
-    var day = String(d.getDate()).padStart(2, "0");
-    return y + "-" + m + "-" + day;
+    return d.getFullYear() + "-" +
+      String(d.getMonth()+1).padStart(2,"0") + "-" +
+      String(d.getDate()).padStart(2,"0");
   }
 
-  // ---------- certificate HTML for the new tab ----------
   function certificateHtml(sn, poi, dMs) {
-    var url =
-      "http://ephyto.pms.ppo.ir/phytosanitary" +
-      "?sn=" + encodeURIComponent(sn) +
-      "&poi=" + encodeURIComponent(poi) +
-      "&d=" + dMs;
+    var url = "http://ephyto.pms.ppo.ir/phytosanitary?sn=" + encodeURIComponent(sn) +
+      "&poi=" + encodeURIComponent(poi) + "&d=" + dMs;
     var qrSrc = buildQr(url);
 
-    var col0 = "", col1 = "", col2 = "", col3 = "", col4 = "", col5 = "";
+    var col0="", col1="", col2="", col3="", col4="", col5="";
     CERT.Products.forEach(function (p, i) {
-      col0 += "<span>" + (i + 1) + "</span><br>";
+      col0 += "<span>" + (i+1) + "</span><br>";
       col1 += "<span>" + escapeHtml(p.ProductEnglishName) + "</span><br>";
       col2 += "<span>" + escapeHtml(p.ProductScientificName) + "</span><br>";
-      col3 += "<span>" + escapeHtml(p.NoOfPackages + " " + p.TypeOfPackagesName) + "</span><br>";
+      col3 += "<span>" + escapeHtml(p.NoOfPackages+" "+p.TypeOfPackagesName) + "</span><br>";
       col4 += "<span>************</span><br>";
-      col5 += "<span>" + escapeHtml(p.T2 || "************") + "</span><br>";
+      col5 += "<span>" + escapeHtml(p.T2||"************") + "</span><br>";
     });
-    while ((col0.match(/<br>/g) || []).length < 7) {
+    while ((col0.match(/<br>/g)||[]).length < 7) {
       col0 += "<span>0<span>*</span></span><br>";
       col1 += "<span>***************</span><br>";
       col2 += "<span>***************</span><br>";
@@ -263,9 +248,13 @@
         ".toolbar h1{font-size:15px;margin:0 auto 0 0;font-weight:600;}" +
         ".toolbar button{padding:6px 12px;font-size:14px;border-radius:4px;cursor:pointer;" +
           "color:#fff;background:#5cb85c;border:1px solid #4cae4c;}" +
-        ".stage{display:flex;justify-content:center;padding:30px;}" +
+        ".stage{display:flex;justify-content:center;padding:30px;" +
+          /* CERTIFICATE background = bgcopy.png */
+          "background-image:url('bgcopy.png');background-size:cover;background-position:center;" +
+          "background-repeat:no-repeat;min-height:calc(100vh - 50px);}" +
         "#print-container{height:29.7cm;width:21cm;font-family:tahoma,sans-serif;font-size:10px;" +
-          "position:relative;background:#fbfaf5;box-shadow:0 0 12px rgba(0,0,0,.6);}" +
+          "position:relative;background:rgba(255,255,255,0.92);" +
+          "box-shadow:0 0 12px rgba(0,0,0,.6);}" +
         ".part{position:absolute;color:#686868;font-weight:600;}" +
         ".part>span{display:block;margin-bottom:7px;}" +
         "#p0{top:2.5cm;left:12.5cm;width:8.5cm;text-indent:2cm;}" +
@@ -296,23 +285,19 @@
         "#qrcode-image{position:absolute;width:2cm;height:2cm;top:2cm;left:17.85cm;}" +
         "@page{size:A4 portrait;margin:0;}" +
         "@media print{body{background:#fff;}.toolbar,.stage{display:none!important;}" +
-          "#print-container{box-shadow:none;margin:0;}}" +
+          "#print-container{box-shadow:none;margin:0;background:#fff;}}" +
       "</style></head><body>" +
       "<div class='toolbar'><h1>E-Phyto " + escapeHtml(sn) + "</h1>" +
         "<button onclick='window.print()'>Print / Save as PDF</button></div>" +
       "<div class='stage'><div id='print-container'>" +
         "<img id='qrcode-image' alt='QR' src='" + qrSrc + "'>" +
         "<div class='part' id='p0'>" + escapeHtml(CERT.SerialNo) + "</div>" +
-        "<div class='part' id='p1'>" +
-          escapeHtml(CERT.ExporterName) + " <br>" +
+        "<div class='part' id='p1'>" + escapeHtml(CERT.ExporterName) + " <br>" +
           escapeHtml(CERT.ExporterPostalCode) + " <br>" +
           escapeHtml(CERT.ExporterAddress) + " <br>" +
-          escapeHtml(CERT.ExporterTel) + " <br>" +
-          "***************************</div>" +
-        "<div class='part' id='p2'>" +
-          escapeHtml(CERT.ConsigneeName) + " <br>" +
-          escapeHtml(CERT.ConsigneeAddress) + " <br>" +
-          "****************************************</div>" +
+          escapeHtml(CERT.ExporterTel) + " <br>***************************</div>" +
+        "<div class='part' id='p2'>" + escapeHtml(CERT.ConsigneeName) + " <br>" +
+          escapeHtml(CERT.ConsigneeAddress) + " <br>****************************************</div>" +
         "<div class='part' id='p3'>" + escapeHtml(CERT.CountryEnglishName) + "</div>" +
         "<div class='part' id='p4'>" + escapeHtml(CERT.SourceCountryEnglishName) + "</div>" +
         "<div class='part' id='p5'>" + escapeHtml(CERT.TConveyance11) + "</div>" +
@@ -337,64 +322,43 @@
         "<div class='part' id='p16-3'>" + escapeHtml(CERT.ConfirmDateString) + "</div>" +
         "<div class='part' id='p16-4'>" + escapeHtml(CERT.ConfirmerEnglishName + " " + CERT.ConfirmerUserCode) + "</div>" +
         "<div class='part' id='p16-5'></div>" +
-      "</div></div>" +
-      "</body></html>";
+      "</div></div></body></html>";
   }
 
-  // ---------- result rendering ----------
   function setResult(kind, sn, poi, dMs) {
     var box = document.getElementById("result");
     if (kind === "found") {
       box.style.display = "";
-      box.innerHTML =
-        '<code>Certificate exists. ' +
-        '<span class="link" id="view-doc">(view document)</span></code>';
+      box.innerHTML = '<code>Certificate exists. <span class="link" id="view-doc">(view document)</span></code>';
       document.getElementById("view-doc").onclick = function () {
-        var html = certificateHtml(sn, poi, dMs);
         var w = window.open("", "_blank");
-        if (!w) {
-          alert("Please allow pop-ups for this site to view the certificate.");
-          return;
-        }
-        w.document.open();
-        w.document.write(html);
-        w.document.close();
+        if (!w) { alert("Please allow pop-ups for this site."); return; }
+        w.document.open(); w.document.write(certificateHtml(sn, poi, dMs)); w.document.close();
       };
     } else if (kind === "notFound") {
       box.style.display = "";
-      box.innerHTML =
-        "<code>No phytosanitary certificate was found with these information.</code>";
+      box.innerHTML = "<code>No phytosanitary certificate was found with these information.</code>";
     } else {
       box.style.display = "";
       box.innerHTML = "<code>Loading...</code>";
     }
   }
 
-  // ---------- URL <-> form sync ----------
   function currentDateMs() {
-    var v = document.getElementById("date").value; // yyyy-mm-dd
+    var v = document.getElementById("date").value;
     if (!v) return Date.now();
-    // Build a local-date timestamp (midnight local), matching real app semantics
-    var parts = v.split("-");
-    var dt = new Date(
-      parseInt(parts[0], 10),
-      parseInt(parts[1], 10) - 1,
-      parseInt(parts[2], 10)
-    );
-    return dt.getTime();
+    var p = v.split("-");
+    return new Date(+p[0], +p[1]-1, +p[2]).getTime();
   }
 
   function readUrlParams() {
     var q = new URLSearchParams(location.search);
     var sn = q.get("sn") || "";
     var poi = q.get("poi") || "6";
-    var dRaw = q.get("d");
-    var dMs = dRaw ? parseInt(dRaw, 10) : Date.now();
-
+    var dMs = q.get("d") ? parseInt(q.get("d"),10) : Date.now();
     document.getElementById("sn").value = sn;
     document.getElementById("poi").value = poi;
     document.getElementById("date").value = toInputDate(new Date(dMs));
-
     return { sn: sn, poi: poi, dMs: dMs };
   }
 
@@ -403,46 +367,34 @@
     if (sn) q.set("sn", sn); else q.delete("sn");
     if (poi) q.set("poi", poi); else q.delete("poi");
     if (dMs) q.set("d", String(dMs)); else q.delete("d");
-    var newUrl = location.pathname + (q.toString() ? "?" + q.toString() : "");
-    history.replaceState(null, "", newUrl);
+    history.replaceState(null, "", location.pathname + (q.toString() ? "?"+q.toString() : ""));
   }
 
-  // ---------- search ----------
   function doSearch(sn, poi, dMs, updateUrl) {
     if (updateUrl) writeUrlParams(sn, poi, dMs);
     setResult("loading");
-
-    // Mock backend — swap for a real fetch to EPhytosanitary/Get when available.
     setTimeout(function () {
-      if (sn === "053624303") {
-        setResult("found", sn, poi, dMs);
-      } else {
-        setResult("notFound");
-      }
+      if (sn === "053624303") setResult("found", sn, poi, dMs);
+      else setResult("notFound");
     }, 400);
   }
 
   document.getElementById("search-btn").addEventListener("click", function () {
-    var sn = document.getElementById("sn").value.trim();
-    var poi = document.getElementById("poi").value;
-    var dMs = currentDateMs();
-    doSearch(sn, poi, dMs, true);
+    doSearch(
+      document.getElementById("sn").value.trim(),
+      document.getElementById("poi").value,
+      currentDateMs(),
+      true
+    );
   });
-
   document.getElementById("today-btn").addEventListener("click", function () {
     document.getElementById("date").value = toInputDate(new Date());
   });
 
-  // ---------- boot: honor ?sn=&poi=&d= like the real app ----------
   (function () {
-    // Default date = today if the URL didn't specify one
     document.getElementById("date").value = toInputDate(new Date());
-
-    var params = readUrlParams();
-    if (params.sn) {
-      // Auto-search only if the URL supplied a serial
-      doSearch(params.sn, params.poi, params.dMs, false);
-    }
+    var p = readUrlParams();
+    if (p.sn) doSearch(p.sn, p.poi, p.dMs, false);
   })();
 </script>
 </body>

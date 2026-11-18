@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Phytosanitary Certificate Search</title>
@@ -14,15 +14,12 @@
       "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    /* MAIN PAGE background = blur.png */
     background-color: #1f3b2d;
     background-image: url("blur.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-
     min-height: 100vh;
   }
 
@@ -189,6 +186,7 @@
       ProductScientificName: "Ficus carica",
       NoOfPackages: "2410",
       TypeOfPackagesName: "Carton",
+      T1: "",
       T2: "Net: 21690 Kg"
     }],
     EnglishProvinceName: "West Azerbaijan",
@@ -220,27 +218,18 @@
     var url = "http://ephyto.pms.ppo.ir/phytosanitary?sn=" + encodeURIComponent(sn) +
       "&poi=" + encodeURIComponent(poi) + "&d=" + dMs;
     var qrSrc = buildQr(url);
-
-    // absolute URL so the about:blank popup can load it
     var bgAbs = new URL("bgcopy.png", window.location.href).href;
 
-    var col0="", col1="", col2="", col3="", col4="", col5="";
+    /* Product columns — NO padding, exactly one row per product */
+    var col0 = "", col1 = "", col2 = "", col3 = "", col4 = "", col5 = "";
     CERT.Products.forEach(function (p, i) {
-      col0 += "<span>" + (i+1) + "</span><br>";
-      col1 += "<span>" + escapeHtml(p.ProductEnglishName) + "</span><br>";
-      col2 += "<span>" + escapeHtml(p.ProductScientificName) + "</span><br>";
-      col3 += "<span>" + escapeHtml(p.NoOfPackages+" "+p.TypeOfPackagesName) + "</span><br>";
-      col4 += "<span>************</span><br>";
-      col5 += "<span>" + escapeHtml(p.T2||"************") + "</span><br>";
+      col0 += "<span>" + (i + 1) + "</span><br>";
+      col1 += "<span>" + escapeHtml(p.ProductEnglishName || "") + "</span><br>";
+      col2 += "<span>" + escapeHtml(p.ProductScientificName || "") + "</span><br>";
+      col3 += "<span>" + escapeHtml((p.NoOfPackages || "") + " " + (p.TypeOfPackagesName || "")) + "</span><br>";
+      col4 += "<span>" + escapeHtml(p.T1 || "") + "</span><br>";
+      col5 += "<span>" + escapeHtml(p.T2 || "") + "</span><br>";
     });
-    while ((col0.match(/<br>/g)||[]).length < 7) {
-      col0 += "<span>0<span>*</span></span><br>";
-      col1 += "<span>***************</span><br>";
-      col2 += "<span>***************</span><br>";
-      col3 += "<span>***************</span><br>";
-      col4 += "<span>************</span><br>";
-      col5 += "<span>************</span><br>";
-    }
 
     return "<!doctype html><html><head><meta charset='utf-8'>" +
       "<title>E-Phyto " + escapeHtml(sn) + "</title>" +
@@ -253,10 +242,8 @@
         ".toolbar button{padding:6px 12px;font-size:14px;border-radius:4px;cursor:pointer;" +
           "color:#fff;background:#5cb85c;border:1px solid #4cae4c;}" +
 
-        /* stage only centers the sheet — no background here */
         ".stage{display:flex;justify-content:center;padding:30px;}" +
 
-        /* bgcopy.png mapped exactly onto the A4 sheet */
         "#print-container{height:29.7cm;width:21cm;font-family:tahoma,sans-serif;font-size:10px;" +
           "position:relative;" +
           "background-image:url('" + bgAbs + "');" +
@@ -291,7 +278,12 @@
         "#p16-3{top:22.9cm;left:14cm;width:6.5cm;}" +
         "#p16-4{top:24.5cm;left:13cm;width:7.5cm;}" +
         "#p16-5{top:26.5cm;left:13cm;width:6.5cm;}" +
+
+        /* QR 1 — original slot (top-right area of sheet) */
         "#qrcode-image{position:absolute;width:2cm;height:2cm;top:2cm;left:17.85cm;}" +
+        /* QR 2 — right side, below the first one */
+        "#qrcode-image-right{position:absolute;width:2.2cm;height:2.2cm;top:4.6cm;right:0.8cm;}" +
+
         "@page{size:A4 portrait;margin:0;}" +
         "@media print{body{background:#fff;}.toolbar,.stage{display:none!important;}" +
           "#print-container{box-shadow:none;margin:0;}}" +
@@ -300,13 +292,14 @@
         "<button onclick='window.print()'>Print / Save as PDF</button></div>" +
       "<div class='stage'><div id='print-container'>" +
         "<img id='qrcode-image' alt='QR' src='" + qrSrc + "'>" +
+        "<img id='qrcode-image-right' alt='QR' src='" + qrSrc + "'>" +
         "<div class='part' id='p0'>" + escapeHtml(CERT.SerialNo) + "</div>" +
         "<div class='part' id='p1'>" + escapeHtml(CERT.ExporterName) + " <br>" +
           escapeHtml(CERT.ExporterPostalCode) + " <br>" +
           escapeHtml(CERT.ExporterAddress) + " <br>" +
-          escapeHtml(CERT.ExporterTel) + " <br>***************************</div>" +
+          escapeHtml(CERT.ExporterTel) + "</div>" +
         "<div class='part' id='p2'>" + escapeHtml(CERT.ConsigneeName) + " <br>" +
-          escapeHtml(CERT.ConsigneeAddress) + " <br>****************************************</div>" +
+          escapeHtml(CERT.ConsigneeAddress) + "</div>" +
         "<div class='part' id='p3'>" + escapeHtml(CERT.CountryEnglishName) + "</div>" +
         "<div class='part' id='p4'>" + escapeHtml(CERT.SourceCountryEnglishName) + "</div>" +
         "<div class='part' id='p5'>" + escapeHtml(CERT.TConveyance11) + "</div>" +
@@ -320,12 +313,12 @@
           "<div class='part' id='p7-5'>" + col5 + "</div>" +
         "</div>" +
         "<div class='part' id='p9'> </div>" +
-        "<div class='part' id='p10'><span>*****</span></div>" +
-        "<div class='part' id='p11'><span>*****</span></div>" +
-        "<div class='part' id='p12'><span>*****</span><span></span><span>*****</span></div>" +
-        "<div class='part' id='p13'><span>*****</span></div>" +
-        "<div class='part' id='p14'><span>*****</span></div>" +
-        "<div class='part' id='p15'><span>*****</span></div>" +
+        "<div class='part' id='p10'></div>" +
+        "<div class='part' id='p11'></div>" +
+        "<div class='part' id='p12'></div>" +
+        "<div class='part' id='p13'></div>" +
+        "<div class='part' id='p14'></div>" +
+        "<div class='part' id='p15'></div>" +
         "<div class='part' id='p16-1'>" + escapeHtml(CERT.EnglishProvinceName) + "</div>" +
         "<div class='part' id='p16-2'>" + escapeHtml(CERT.IssueNo) + "</div>" +
         "<div class='part' id='p16-3'>" + escapeHtml(CERT.ConfirmDateString) + "</div>" +

@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
 <meta charset="utf-8">
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Phytosanitary Certificate Search</title>
 <style>
@@ -164,7 +164,6 @@
   <div class="row result-container" id="result" style="display:none;"></div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script>
   var CERT = {
     SerialNo: "053624303",
@@ -196,13 +195,6 @@
     ConfirmerUserCode: "204"
   };
 
-  function buildQr(value) {
-    try {
-      var qr = qrcode(0, "M");
-      qr.addData(value); qr.make();
-      return qr.createDataURL(6, 0);
-    } catch (e) { return ""; }
-  }
   function escapeHtml(s) {
     return String(s == null ? "" : s)
       .replace(/&/g,"&amp;").replace(/</g,"&lt;")
@@ -215,12 +207,11 @@
   }
 
   function certificateHtml(sn, poi, dMs) {
-    var url = "http://ephyto.pms.ppo.ir/phytosanitary?sn=" + encodeURIComponent(sn) +
-      "&poi=" + encodeURIComponent(poi) + "&d=" + dMs;
-    var qrSrc = buildQr(url);
     var bgAbs = new URL("bgcopy.png", window.location.href).href;
+    // Static QR image — absolute URL so the about:blank popup can load it.
+    var qrAbs = new URL("qrcode.png", window.location.href).href;
 
-    /* Product columns — NO padding, exactly one row per product */
+    /* Product columns — exactly one row per product, no padding */
     var col0 = "", col1 = "", col2 = "", col3 = "", col4 = "", col5 = "";
     CERT.Products.forEach(function (p, i) {
       col0 += "<span>" + (i + 1) + "</span><br>";
@@ -279,10 +270,8 @@
         "#p16-4{top:24.5cm;left:13cm;width:7.5cm;}" +
         "#p16-5{top:26.5cm;left:13cm;width:6.5cm;}" +
 
-        /* QR 1 — original slot (top-right area of sheet) */
+        /* static QR slot — hidden if qrcode.png is missing */
         "#qrcode-image{position:absolute;width:2cm;height:2cm;top:2cm;left:17.85cm;}" +
-        /* QR 2 — right side, below the first one */
-        "#qrcode-image-right{position:absolute;width:2.2cm;height:2.2cm;top:4.6cm;right:0.8cm;}" +
 
         "@page{size:A4 portrait;margin:0;}" +
         "@media print{body{background:#fff;}.toolbar,.stage{display:none!important;}" +
@@ -291,8 +280,9 @@
       "<div class='toolbar'><h1>E-Phyto " + escapeHtml(sn) + "</h1>" +
         "<button onclick='window.print()'>Print / Save as PDF</button></div>" +
       "<div class='stage'><div id='print-container'>" +
-        "<img id='qrcode-image' alt='QR' src='" + qrSrc + "'>" +
-        "<img id='qrcode-image-right' alt='QR' src='" + qrSrc + "'>" +
+        /* static QR; on error hide itself entirely (blank slot) */
+        "<img id='qrcode-image' alt='' src='" + qrAbs + "' " +
+          "onerror=\"this.style.display='none'\">" +
         "<div class='part' id='p0'>" + escapeHtml(CERT.SerialNo) + "</div>" +
         "<div class='part' id='p1'>" + escapeHtml(CERT.ExporterName) + " <br>" +
           escapeHtml(CERT.ExporterPostalCode) + " <br>" +
